@@ -1,0 +1,287 @@
+{include file="public/header"}
+<style>
+    .charts{width: 100%;height: 360px;}
+    a.active_view{color:white; background-color: #0e90d2}
+</style>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span> 数据分析
+    <span class="c-gray en">&gt;</span> 数据列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+    <div id="chart-1" class="charts"></div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <a class="btn btn-primary radius bg-1 c-blue active_view" data-type="day" onclick="switchView(this)"><i class="Hui-iconfont">&#xe600;</i> 日视图</a>
+            <a class="btn btn-primary radius bg-1 c-blue" data-type="month" onclick="switchView(this)"><i class="Hui-iconfont">&#xe600;</i> 月视图</a>
+            <span>选择筛选条件：</span>
+        </span>
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+    </div>
+    <div>
+        <form id="form1" method="get" action="">
+        <table class="table table-border table-bordered">
+            <thead>
+            <tr class="text-c">
+                <th width="100">成交日期(起始)</th>
+                <th width="100">成交日期(结束)</th>
+                <th width="120">地区</th>
+                <th width="120">油厂</th>
+                <th width="120">品牌</th>
+                <th width="150">成交类别</th>
+                <th width="150">成交方式</th>
+                <th>提交</th>
+<!--                <th width="50">成交量</th>
+                <th width="100">成交价</th>
+                <th width="150">交货月</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{:date_widget('trade_date','',0)}</td>
+                <td>{:date_widget('trade_date_end','',0)}</td>
+                <td>
+                    <select name="area" id="refinery_area">
+                        <option value="0" data-id="0">全部地区</option>
+                        {volist name='areas' id='r'}
+                        <option data-id="{$r['id']}" value="{$r['area']}" {if condition="$r['area']===$vars['area']"}selected{/if}>{$r['area']}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>
+                    <select name="refinery" id="refinery">
+                        <!--<option value="0">请选择油厂</option>-->
+                    </select>
+                </td>
+                <td>
+                    <select name="brand" id="brand">
+                        <option value="0">全部品牌</option>
+                        {volist name="brands" id="r"}
+                        <option value="{$r}" {if condition="$r===$vars['brand']"}selected{/if}>{$r}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>
+                    <select name="trade_type" id="trade_type">
+                        <option value="0">全部成交类别</option>
+                        <option value="现货" {if condition="$vars['trade_type']==='现货'"}selected{/if}>现货</option>
+                        <option value="远月" {if condition="$vars['trade_type']==='远月'"}selected{/if}>远月</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="trade_mode" id="trade_mode">
+                        <option value="0">全部成交方式</option>
+                        <option value="一口价" {if condition="$vars['trade_mode']==='一口价'"}selected{/if}>一口价</option>
+                        <option value="基差" {if condition="$vars['trade_mode']==='基差'"}selected{/if}>基差</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary radius">提交查询</button>
+                    <button class="btn btn-primary radius ml-20" onclick="resetAll()" value="重置成交日期">重置查询条件</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </form>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="70">ID</th>
+                <th width="70">成交日期</th>
+                <th width="100">地区</th>
+                <th width="100">品牌</th>
+                <th width="100">油厂</th>
+                <th width="150">成交类别</th>
+                <th width="150">成交方式</th>
+                <th width="50">成交量</th>
+                <th width="100">成交价</th>
+                <th width="150">交货月</th>
+                <th width="100">基差</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='res' id='data'}
+            <tr class="text-c">
+                <td>{$data.id}</td>
+                <td>{:date('Y-m-d',$data.trade_date)}</td>
+                <td>{$data.area}</td>
+                <td>{$data.brand}</td>
+                <td>{$data.name}</td>
+                <td>{$data.trade_type}</td>
+                <td>{$data.trade_mode}</td>
+                <td>{$data.volume}</td>
+                <td>
+                    {if condition="$data.trade_mode=='一口价'"}{$data.trade_price}
+                    {else/}
+                        {if condition="$data.basis<0"}{$data.contract}{$data.basis}
+                        {elseif condition="$data.basis>0"}{$data.contract}+{$data.basis}
+                        {else/}{$data.contract}
+                        {/if}
+                    {/if}
+                </td>
+                <td>
+                    <?php if($data['trade_mode']=='一口价'){echo date('Y-m',$data['delivery_date_fixed_price']);}else{if($data['delivery_date_basis_start']== $data['delivery_date_basis_end']){echo date('Y-m',$data['delivery_date_basis_start']);}else{echo date('Y-m',$data['delivery_date_basis_start']).'至'.date('Y-m',$data['delivery_date_basis_end']);}} ?>
+                </td>
+                <td>{$data.basis}</td>
+                <td class="f-14 product-brand-manage"><a style="text-decoration:none" onClick="pop_window('修改考生信息','{:url('admin/analysis/editTrade',['id'=>$data.id])}',800,560)" href="javascript:" title="编辑"><i class="Hui-iconfont">&#xe6df;</i>修改</a> <a style="text-decoration:none" class="ml-5" onClick="return confirm('确定要删除么？')" href="{:url('admin/analysis/delTrade',['id'=>$data.id])}" title="删除"><i class="Hui-iconfont">&#xe6e2;</i>删除</a></td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+    {$page}
+</div>
+<input type="text" id="trade_date_hide" hidden value="{$vars['trade_date']}">
+<input type="text" id="trade_date_end_hide" hidden value="{$vars['trade_date_end']}">
+<input type="text" id="refinery_hide" hidden value="{$vars['refinery']}">
+{include file="public/footer"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="__STATIC__/js/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/echarts/theme/shine.js"></script>
+<script type="text/javascript">
+    $(function () {
+        get_refinery($('#refinery_area'));
+    });
+    
+    $('#refinery').click(function (e) {
+        if($('#refinery_area').val()==0){
+            e.preventDefault();
+            alert('请先选择地区！');
+        }
+    });
+    $('#refinery_area').change(function () {
+        get_refinery($('#refinery_area'));
+    });
+
+    //生成油厂选择菜单
+    function get_refinery(key) {
+        var $this=key;
+        var $area_id=parseInt($this.find("option:selected").attr('data-id'));
+        var html='<option value="0">全部油厂</option>';
+        if($area_id!==0){
+            $.ajax({
+                type:'get',
+                url:'{:url("admin/analysis/ajaxGetRefineryByAreaId")}',
+                dataType:'json',
+                data:{'area_id':$area_id},
+                success:function (data) {
+                    $.each(data,function (i,n) {
+                        if($("#refinery_hide").val()==n.name){
+                            html+='<option value="'+n.name+'" selected>'+n.name+'</option>';
+                        }else{
+                            html+='<option value="'+n.name+'">'+n.name+'</option>';
+                        }
+                    });
+                    $('#refinery').empty().append(html);
+                }
+            });
+        }else{
+            $('#refinery').empty().append(html);
+        }
+    }
+    
+    //重置查询条件
+    function resetAll() {
+        $("#form1 input").val("0");
+    }
+
+    $('#trade_date').val($("#trade_date_hide").val());
+    $('#trade_date_end').val($("#trade_date_end_hide").val());
+</script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chart-1'),'shine');
+    // 指定图表的配置项和数据
+    option = {
+        tooltip:{
+            trigger:'axis',
+            axisPointer:{
+                type:'cross',
+                crossStyle:{color:'#999'}
+            }
+        },
+        toolbox:{
+            feature:{
+                dataView:{show:true,readOnly:false},
+                magicType:{show:true,type:['line','bar']},
+                restore:{show:true},
+                saveAsImage:{show:true}
+            }
+        },
+        legend:{
+            data:['总成交量','现货','远月']
+        },
+        xAxis:[
+            {
+                type:'category',
+                data:{$day_arr},
+                axisPointer:{type:'shadow'}
+            }
+        ],
+        yAxis:[
+            {
+                type:'value',
+                name:'成交量',
+                min:0,
+                max:{$max_volume}+2000,
+                axisLabel:{formatter:'{value}'}
+            }
+        ],
+        series:[
+            {
+                name:'现货',
+                type:'bar',
+                data:{$spot_volume}
+            },
+            {
+                name:'远月',
+                type:'bar',
+                data:{$basis_volume}
+            },
+            {
+                name:'总成交量',
+                type:'line',
+                data:{$volume}
+            }
+        ]
+
+
+
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script>
+    function switchView(v) {
+        var $this=$(v);
+        $this.addClass('active_view').siblings().removeClass('active_view');
+        var type=$this.attr('data-type');
+        $.ajax({
+            type:'GET',
+            url:"{:url('admin/analysis/ajaxGetTrade')}",
+            dataType:'json',
+            data:{type:type},
+            success:function (info) {
+                if(parseInt(info.code)===2){
+                    console.log(info.data);
+                    option.series[0].data=info.data.spot_volume_arr;
+                    option.series[1].data=info.data.basis_volume_arr;
+                    option.series[2].data=info.data.volume_arr;
+                    option.xAxis[0].data=info.data.time_arr;
+                    option.yAxis[0].max=info.data.max_volume;
+                    myChart.setOption(option);
+                }else{
+                    alert('获取数据出错，请联系管理员！');
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

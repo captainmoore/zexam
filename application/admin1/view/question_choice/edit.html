@@ -1,0 +1,108 @@
+{include file="public/header"}
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add" method="post" action="{:url('admin/questionChoice/edit')}">
+        <input type="text" name="question_id" value="{$question['id']}" hidden>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>题目类别：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                <span class="select-box">
+                    <select name="category_id" class="select">
+                        <option value="0">请选择类别</option>
+                        {volist name="category" id="r"}
+                        <option value="{$r['id']}" {if condition="$r['id'] eq $question['category_id']"}selected="selected"{/if}>{$r['category']}</option>
+                        {/volist}
+                    </select>
+                </span>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>题目：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="title" class="textarea" style="height:100%;" rows="3" placeholder="在此输入题目" dragonfly="true"onKeyUp="$.Huitextarealength(this,100)">{$question['title']}</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">答案：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                {volist name="answer" id="r"}
+                <dl class="permission-list">
+                    <dt>
+                        <label>选项:</label>
+                        <input type="text" value="{$r.option}" name="answer[{$r.option}][option]" class="input-text inline ml-5 text-c" style="width:30px;">
+                        <label class="ml-30">权值:</label>
+                        <input type="text" value="{$r.weight}" name="answer[{$r.option}][weight]" class="input-text inline ml-5 text-c" style="width:30px;">
+                        <label class="ml-5">分</label>
+                    </dt>
+                    <dd style="padding:10px;">
+                        <div class="formControls cl">
+                            <textarea name="answer[{$r.option}][content]" class="textarea" style="height:100%;" rows="3" placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)">{$r.content}</textarea>
+                        </div>
+                    </dd>
+                </dl>
+                {/volist}
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否启用：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-1" value="1" checked>
+                    <label for="status-1">是</label>
+                </div>
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-2" value="0">
+                    <label for="status-2">否</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="remark" cols="" rows="" class="textarea" placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="$.Huitextarealength(this,100)">{$question['remark']}</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-admin-add").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 16
+                },
+                sex: {
+                    required: true
+                },
+                sn: {
+                    required: true
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

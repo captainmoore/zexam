@@ -1,0 +1,174 @@
+{include file="public/header"}
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add" method="post" action="{:url('admin/questionChoice/add')}">
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>题目类别：</label>
+            <div class="formControls col-xs-4 col-sm-2"> <span class="select-box">
+                    <select name="category_id" class="select">
+                        <option value="0">请选择类别</option>
+                        {volist name="category" id="r"}
+                        <option value="{$r['id']}">{$r['category']}</option>
+                        {/volist}
+                    </select>
+                </span> </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>题目：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="title" class="textarea" style="height:100%;" rows="3" placeholder="在此输入题目" dragonfly="true"
+                    onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">答案：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <dl class="permission-list">
+                    <dt>
+                        <label>选项:</label>
+                        <input type="text" value="A" name="answer[A][option]" class="input-text inline ml-5 text-c"
+                            style="width:30px;">
+                        <label class="ml-30">权值:</label>
+                        <input type="text" value="0" name="answer[A][weight]" class="input-text inline ml-5 text-c"
+                            style="width:30px;">
+                        <label class="ml-5">分</label>
+                    </dt>
+                    <dd style="padding:10px;">
+                        <div class="formControls cl">
+                            <textarea name="answer[A][content]" class="textarea" style="height:100%;" rows="3"
+                                placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                        </div>
+                    </dd>
+                </dl>
+                <dl class="permission-list">
+                    <dt>
+                        <label>选项:</label>
+                        <input type="text" value="B" name="answer[B][option]" class="input-text inline ml-5 text-c"
+                            style="width:30px;">
+                        <label class="ml-30">权值:</label>
+                        <input type="text" value="0" name="answer[B][weight]" class="input-text inline ml-5 text-c"
+                            style="width:30px;">
+                        <label class="ml-5">分</label>
+                    </dt>
+                    <dd style="padding:10px;">
+                        <div class="formControls cl">
+                            <textarea name="answer[B][content]" class="textarea" style="height:100%;" rows="3"
+                                placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                        </div>
+                    </dd>
+                </dl>
+                <dl class="permission-list">
+                        <dt>
+                            <label>选项:</label>
+                            <input type="text" value="C" name="answer[C][option]" class="input-text inline ml-5 text-c"
+                                style="width:30px;">
+                            <label class="ml-30">权值:</label>
+                            <input type="text" value="0" name="answer[C][weight]" class="input-text inline ml-5 text-c"
+                                style="width:30px;">
+                            <label class="ml-5">分</label>
+                        </dt>
+                        <dd style="padding:10px;">
+                            <div class="formControls cl">
+                                <textarea name="answer[C][content]" class="textarea" style="height:100%;" rows="3"
+                                    placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="permission-list">
+                            <dt>
+                                <label>选项:</label>
+                                <input type="text" value="D" name="answer[D][option]" class="input-text inline ml-5 text-c"
+                                    style="width:30px;">
+                                <label class="ml-30">权值:</label>
+                                <input type="text" value="0" name="answer[D][weight]" class="input-text inline ml-5 text-c"
+                                    style="width:30px;">
+                                <label class="ml-5">分</label>
+                            </dt>
+                            <dd style="padding:10px;">
+                                <div class="formControls cl">
+                                    <textarea name="answer[D][content]" class="textarea" style="height:100%;" rows="3"
+                                        placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="permission-list">
+                                <dt>
+                                    <label>选项:</label>
+                                    <input type="text" value="E" name="answer[E][option]" class="input-text inline ml-5 text-c" style="width:30px;">
+                                    <label class="ml-30">权值:</label>
+                                    <input type="text" value="0" name="answer[E][weight]" class="input-text inline ml-5 text-c" style="width:30px;">
+                                    <label class="ml-5">分</label>
+                                </dt>
+                                <dd style="padding:10px;">
+                                    <div class="formControls cl">
+                                        <textarea name="answer[E][content]" class="textarea" style="height:100%;" rows="3" placeholder="在此输入选项内容" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                                    </div>
+                                </dd>
+                            </dl>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否启用：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-1" value="1" checked>
+                    <label for="status-1">是</label>
+                </div>
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-2" value="0">
+                    <label for="status-2">否</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="remark" cols="" rows="" class="textarea" placeholder="说点什么...100个字符以内" dragonfly="true"
+                    onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-admin-add").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 16
+                },
+                sex: {
+                    required: true
+                },
+                sn: {
+                    required: true
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

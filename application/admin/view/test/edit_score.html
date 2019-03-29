@@ -1,0 +1,139 @@
+{include file="public/header"}
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i>
+    首页 <span class="c-gray en">&gt;</span> 考试管理 <span class="c-gray en">&gt;</span> 考试列表
+    <span class="c-gray en">&gt;</span> 修改成绩
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container input-score">
+    <div class="title">
+        <h1>{$test_name}</h1>
+        <span>{$test_description}</span>
+        <span class="r">结束时间：{:date('Y-m-d H:i:s',$test_end_time)}</span>
+        <span class="r mr-30">开始时间：{:date('Y-m-d H:i:s',$test_start_time)}</span>
+    </div>
+    <div class="mt-20">
+        <form name="myform" action="{:url('admin/test/editScore')}" method="post">
+            <table id="score_table" class="table table-border table-bordered table-bg table-sort">
+                <thead>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="30">排序</th>
+                    <th width="40">分数ID</th>
+                    <th width="100">考生ID</th>
+                    <th width="200">姓名</th>
+                    <th width="200">分数</th>
+                    <th>备注</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="scores" id="r"}
+                <tr class="text-c" data-id="{$r.id}">
+                    <td><input name="" type="checkbox" value=""></td>
+                    <td><input class="input-text" type="text" name="info[{$r.id}][list_order]" value="{$r.list_order}">
+                    </td>
+                    <td><input class="input-text id" type="text" name="info[{$r.id}][id]" value="{$r.id}" readonly></td>
+                    <td>
+                        <input class="input-text candidate_id" type="text" name="info[{$r.id}][candidate_id]" value="{$r.candidate_id}" readonly>
+                    </td>
+                    <td class="candidate_name">
+                        <input class="input-text" type="text" name="info[{$r.id}][name]" value="{$r.candidate_name}">
+                        <ul class="tip">
+                            <!--<li><span>102</span><a href="javascript:">李来来</a></li>-->
+                        </ul>
+                    </td>
+                    <td><input class="input-text" type="text" name="info[{$r.id}][score]" value="{$r.score}"></td>
+                    <td><input class="input-text" type="text" name="info[{$r.id}][remark]" value="{$r.remark}"></td>
+                    <td style="display: none;">
+                        <input class="input-text del_mark" type="text" name="info[{$r.id}][del]" value="1"></td>
+                    <td>
+                        <a href="javascript:" class="remove_self">删除</a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <a href="javascript:" id="add_tr" class="btn btn-primary mt-20">增加一行</a>
+            <input type="submit" id="submit" class="btn btn-success mt-20" value="提交">
+            <input type="text" name="test_id" value="{$test_id}" hidden>
+        </form>
+    </div>
+</div>
+{include file="public/footer"}
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var i = 6 + 1;//计数器
+        var $body = $("body");
+
+        //录入姓名时弹出提示框
+        $body.on("keyup", ".candidate_name input", function () {
+            var $this = $(this);
+            var key = $.trim($this.val());
+            if (key.length > 0) {
+                $.ajax({
+                    type: 'post',
+                    url: '{:url("admin/test/inquiryNameAjax")}',
+                    data: {'key': key},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.length > 0) {
+                            var html = '';
+                            $.each(data, function (i, n) {
+                                html += '<li><span>' + n.id + '</span><a data-id="' + n.id + '" href="javascript:">' + n.name + '</a></li>';
+                            });
+                            $this.siblings('.tip').empty().append(html).show();
+                        } else {
+                            $this.siblings('.tip').empty().hide();
+                        }
+                    }
+                });
+            } else {
+                $this.siblings('.tip').empty().hide();
+            }
+        });
+
+        //点击提示框赋值
+        $body.on("click", ".tip a", function () {
+            var $this = $(this);
+            var name = $this.text();
+            var candidate_id = $this.attr("data-id");
+
+            $this.parents(".tip").siblings("input").val(name);
+            $this.parents("tr").find(".candidate_id").val(candidate_id);
+        });
+
+        //点击任意位置提示框消失
+        $body.click(function () {
+            $('.tip').empty().hide();
+        });
+
+        //增加一行
+        $("#add_tr").click(function () {
+            var info = 'info[' + i + ']';
+            var html = '<tr class="text-c" data-id="">\n' +
+                '<td><input name="" type="checkbox" value=""></td>\n' +
+                '<td><input class="input-text" type="text" name="' + info + '[list_order]" value="0"></td>\n' +
+                '<td><input class="input-text id" type="text" name="' + info + '[id]" value="0" readonly></td>\n' +
+                '<td><input class="input-text candidate_id" type="text" name="' + info + '[candidate_id]" value="0" readonly></td>\n' +
+                '<td class="candidate_name"><input class="input-text" type="text" name="' + info + '[name]" value=""><ul class="tip"></ul></td>\n' +
+                '<td><input class="input-text" type="text" name="' + info + '[score]" value="0"></td>\n' +
+                '<td><input class="input-text" type="text" name="' + info + '[remark]" value=""></td>\n' +
+                '<td style="display:none;"><input class="input-text del_mark" type="text" name="' + info + '[del]" value="1"></td>\n' +
+                '<td><a href="javascript:" class="remove_self">删除</a></td>\n' +
+                '</tr>';
+            $("#score_table tbody").append(html);
+            i++;
+        });
+
+        //移除本行
+        $body.on("click", ".remove_self", function () {
+            $(this).parent().parent().find('.del_mark').val(0);
+            $(this).parents('tr').hide();
+        });
+    });
+</script>
+</body>
+</html>

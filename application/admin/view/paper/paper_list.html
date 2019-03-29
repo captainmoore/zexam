@@ -1,0 +1,61 @@
+{include file="public/header"}
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 试卷管理 <span class="c-gray en">&gt;</span> 试卷列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <a href="javascript:" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+            <a class="btn btn-primary radius" href="{:url('admin/paper/add')}"><i class="Hui-iconfont">&#xe600;</i> 添加考试</a>
+        </span>
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="25"><input type="checkbox" name="" value=""></th>
+                <th width="70">ID</th>
+                <th width="200">名称</th>
+                <th>描述</th>
+                <th width="200">添加时间</th>
+                <th width="200">修改时间</th>
+                <th width="200">管理试卷</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='res' id='data'}
+            <tr class="text-c">
+                <td><input name="" type="checkbox" value=""></td>
+                <td>{$data.id}</td>
+                <td>{$data.name}</td>
+                <td class="text-l">{$data.remark}</td>
+                <td>{$data.create_time}</td>
+                <td>{$data.update_time}</td>
+                <td>
+                    <a href="{:url('admin/paper/show',['id'=>$data.id])}">查看</a>
+                    <a href="{:url('admin/paper/edit',['id'=>$data.id])}">修改</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+{include file="public/footer"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="__STATIC__/js/calendar/calendar.js"></script>
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+            {"orderable":false,"aTargets":[0,6]}// 制定列不参与排序
+        ]
+    });
+</script>
+</body>
+</html>

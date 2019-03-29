@@ -1,0 +1,56 @@
+{include file="public/header"}
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i>
+    首页 <span class="c-gray en">&gt;</span> 考试管理 <span class="c-gray en">&gt;</span> 考试列表
+    <span class="c-gray en">&gt;</span> 录入成绩
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container input-score">
+    <div class="title">
+        <h1>{$test_name}</h1>
+        <span>{$test_description}</span>
+        <span class="r">结束时间：{:date('Y-m-d H:i:s',$test_end_time)}</span>
+        <span class="r mr-30">开始时间：{:date('Y-m-d H:i:s',$test_start_time)}</span>
+        <table class="table table-border table-bordered mt-10">
+            <tr>
+                <td>本次考试共参考 <em>{$score_num}</em> 人，最高分 <em>{$score_max}</em> 分，最低分 <em>{$score_min}</em> 分，平均分 <em>{$score_avg} 分</em></td>
+            </tr>
+        </table>
+    </div>
+    <div class="mt-10">
+        <form name="myform" action="{:url('admin/test/inputScore')}" method="post">
+            <table id="score_table" class="table table-border table-bordered table-bg table-sort">
+                <thead>
+                <tr class="text-c">
+                    <th width="30">排序</th>
+                    <th width="30">ID</th>
+                    <th width="100">考生ID</th>
+                    <th width="200">姓名</th>
+                    <th width="200">分数</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name='scores' id='r'}
+                <tr class="text-c" data-id="">
+                    <td>{$r.list_order}</td>
+                    <td>{$r.id}</td>
+                    <td>{$r.candidate_id}</td>
+                    <td class="candidate_name">
+                        {$r.candidate_name}
+                    </td>
+                    <td>{$r.score}</td>
+                    <td>{$r.remark}</td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <a href="{:url('admin/test/editScore',['id'=>$test_id])}" class="btn btn-primary mt-20">修改分数</a>
+        </form>
+    </div>
+</div>
+{include file="public/footer"}
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+</body>
+</html>

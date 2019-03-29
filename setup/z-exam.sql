@@ -1,0 +1,14 @@
+DROP TABLE
+IF EXISTS `exam_candidates`;
+
+CREATE TABLE `exam_candidates` (
+	`id` INT (11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`sn` INT (6) UNSIGNED NOT NULL DEFAULT 0,
+	`name` VARCHAR (50) NOT NULL,
+	`sex` VARCHAR (10) NOT NULL DEFAULT '男',
+	`age` INT (3) UNSIGNED NOT NULL DEFAULT 0,
+	`photo` VARCHAR (255) NOT NULL DEFAULT 0,
+	`create_time` INT (11) NOT NULL,
+	`update_time` INT (11) NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE = MyISAM DEFAULT charset = utf8;

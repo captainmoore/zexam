@@ -1,0 +1,70 @@
+{include file="public/header"}
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span> 考生管理
+    <span class="c-gray en">&gt;</span> 考生列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <!--<a href="javascript:" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
+            <a class="btn btn-primary radius" onclick='pop_window("添加考生","{:url('admin/candidates/add')}","800","500")' href="javascript:"><i class="Hui-iconfont">&#xe600;</i> 添加考生</a>
+        </span>
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="25"><input type="checkbox" name="" value=""></th>
+                <th width="70">ID</th>
+                <th width="70">编号</th>
+                <th width="100">姓名</th>
+                <th width="50">性别</th>
+                <th width="250">单位</th>
+                <th width="150">电话</th>
+                <th width="200">添加时间</th>
+                <th width="120">更新时间</th>
+                <th>备注</th>
+                <th width="100">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='candidates' id='data'}
+            <tr class="text-c">
+                <td><input name="" type="checkbox" value=""></td>
+                <td>{$data.id}</td>
+                <td>{$data.sn}</td>
+                <td>{$data.name}</td>
+                <td>{$data.sex}</td>
+                <td>{$data.unit}</td>
+                <td>{$data.phone}</td>
+                <td>{$data.create_time}</td>
+                <td>{$data.update_time}</td>
+                <td class="text-l">{$data.remark}</td>
+                <td class="f-14 product-brand-manage"><a style="text-decoration:none" class="ml-5" onClick="return confirm('确定要恢复么？')" href="{:url('admin/candidates/recover',['id'=>$data.id])}" title="删除">恢复</a></td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+{include file="public/footer"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+            {"orderable":false,"aTargets":[0,6]}// 制定列不参与排序
+        ]
+    });
+</script>
+</body>
+</html>

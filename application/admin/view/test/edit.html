@@ -1,0 +1,66 @@
+{include file="public/header"}
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add" method="post" action="{:url('admin/test/edit')}">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$test.name}" placeholder="" id="name" name="name">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>开始时间：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                {:date_widget('start_time',date('Y-m-d H:i:s',$test.start_time),1)}
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>结束时间：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                {:date_widget('end_time',date('Y-m-d H:i:s',$test.end_time),1)}
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" cols="" rows="" class="textarea" value="{$test.description}" placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+        <div class="row cl">
+            <input type="text" value="{$test.id}" hidden name="id">
+        </div>
+    </form>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('textarea').val('{$test.description}');
+
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-admin-add").validate({
+            rules:{
+                name:{
+                    required:true,
+                    minlength:2,
+                    maxlength:16
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

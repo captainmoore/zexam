@@ -1,0 +1,210 @@
+{include file="public/header"}
+<style>
+    input[type="radio"] { zoom: 120%; }
+</style>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 数据分析
+    <span class="c-gray en">&gt;</span> 数据录入
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add" method="post" action="">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交日期：</label>
+            <div class="formControls col-xs-4 col-sm-3">
+                {:date_widget('trade_date','',0)}
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>地区：</label>
+            <div class="formControls col-xs-4 col-sm-3">
+                <span class="select-box">
+                    <select class="select" id="refinery_area">
+                        <option value="0">请选择地区</option>
+                        {volist name='areas' id='r'}
+                        <option value="{$r['id']}">{$r['area']}</option>
+                        {/volist}
+                    </select>
+                </span>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>油厂：</label>
+            <div class="formControls col-xs-4 col-sm-3">
+                <span class="select-box">
+                    <select name="refinery_id" class="select" id="refinery">
+                        <option value="0">请选择油厂</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交类别：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="trade_type" type="radio" id="trade_type_1" value="现货" checked>
+                    <label for="trade_type_1">现货</label>
+                </div>
+                <div class="radio-box">
+                    <input name="trade_type" type="radio" id="trade_type_2" value="远月">
+                    <label for="trade_type_2">远月</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交方式：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="trade_mode" type="radio" id="trade_mode_1" value="一口价" checked>
+                    <label for="trade_mode_1">一口价</label>
+                </div>
+                <div class="radio-box trade_mode_2">
+                    <input name="trade_mode" type="radio" id="trade_mode_2" value="基差">
+                    <label for="trade_mode_2">基差</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交量：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                <input type="text" class="input-text" name="volume" placeholder="输入成交量">
+            </div>
+        </div>
+        <div class="row cl" id="trade_price_fixed_price">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交价：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                <input type="text" class="input-text" name="trade_price" placeholder="输入成交价">
+            </div>
+        </div>
+
+        <div class="row cl hide" id="trade_price_basis">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>成交价：</label>
+            <div class="formControls col-xs-4 col-sm-2" style="width: 150px; padding-right: 0;">
+                <span class="select-box">
+                <select name="contract" class="select">
+                    <option value="">请选择合约类别</option>
+                    <option value="M1905">M1905</option>
+                    <option value="M1909">M1909</option>
+                    <option value="M2001">M2001</option>
+                </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-1 col-sm-2" style="width:60px; padding: 0;">基差：</label>
+            <div class="formControls col-xs-1 col-sm-2" style="width:80px; padding: 0;">
+                <input type="text" class="input-text" name="basis" placeholder="输入基差">
+            </div>
+        </div>
+
+        <div class="row cl delivery_date_fixed_price">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>交货月：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                {:date_widget('delivery_date_fixed_price','',0)}
+            </div>
+        </div>
+        <div class="row cl delivery_date_basis hide">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>交货月（起始）：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                {:date_widget('delivery_date_basis_start','',0)}
+            </div>
+        </div>
+        <div class="row cl delivery_date_basis hide">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>交货月（结束）：</label>
+            <div class="formControls col-xs-4 col-sm-2">
+                {:date_widget('delivery_date_basis_end','',0)}
+            </div>
+        </div>
+
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("input[name='volume']").blur(function () {
+            if($("input[name='trade_type']").val()==='现货'){
+                $('#delivery_date_fixed_price').val($('#trade_date').val());
+            }
+        });
+
+        $("input:radio[name='trade_mode']").change(function () {
+            if ($(this).val() === "一口价") {
+                $("#trade_price_fixed_price").show();
+                $('.delivery_date_fixed_price').show();
+                $("#trade_price_basis").hide();
+                $('.delivery_date_basis').hide();
+            } else {
+                $("#trade_price_basis").show();
+                $('.delivery_date_basis').show();
+                $("#trade_price_fixed_price").hide();
+                $('.delivery_date_fixed_price').hide();
+            }
+        });
+
+        $('#refinery_area').change(function () {
+            var $this=$(this);
+            var $area_id=parseInt($this.val());
+            if($area_id!==0){
+                $.ajax({
+                    type:'get',
+                    url:'{:url("admin/analysis/ajaxGetRefineryByAreaId")}',
+                    dataType:'json',
+                    data:{'area_id':$area_id},
+                    success:function (data) {
+                        var html='<option value="0">请选择油厂</option>';
+                        $.each(data,function (i,n) {
+                            html+='<option value="'+n.id+'">'+n.name+'</option>';
+                        });
+                        $('#refinery').empty().append(html);
+                    }
+                });
+            }
+        });
+
+        $("#form-admin-add").validate({
+            rules: {
+                trade_date: {
+                    required: true
+                },
+                refinery_area: {
+                    required: true
+                },
+                refinery: {
+                    required: true
+                },
+                volume: {
+                    required: true
+                },
+                delivery_date_fixed_price: {
+                    required: true
+                },
+                trade_price: {
+                    required: true
+                },
+                basis: {
+                    required: true
+                },
+                delivery_date_basis_start: {
+                    required: true
+                },
+                delivery_date_basis_end: {
+                    required: true
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

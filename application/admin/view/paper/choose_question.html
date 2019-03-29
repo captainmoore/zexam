@@ -1,0 +1,45 @@
+{include file="public/header"}
+<style>
+    ul li { float: left; margin-right: 10px; width: 200px; cursor: pointer; }
+    ul li:hover { background-color: #fef2d4; }
+    ul li.checked { background-color: #ffa5b6; }
+</style>
+<article class="page-container">
+    <ul class="cl">
+        {volist name="questions" id="r"}
+        <li data-id="{$r.id}">{$r.id} . {$r.title}</li>
+        {/volist}
+    </ul>
+    <button class="btn btn-success mt-10" id="submit">提交选择</button>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript">
+    var choosed={};
+    $(function () {
+        $("li").click(function () {
+            var $this=$(this);
+            var id=$this.attr("data-id");
+            if($this.hasClass("checked")){
+                $this.removeClass("checked");
+                delete choosed['item-'+id];
+
+            }else{
+                $this.addClass("checked");
+                choosed['item-'+id]=id;
+            }
+        });
+        $('#submit').click(function () {
+            parent.choosed=choosed;
+            if(getJsonLength(choosed)>0){
+                window.parent.add_form(choosed);
+                layer_close();
+            }else{
+                alert('至少选择1道题');
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

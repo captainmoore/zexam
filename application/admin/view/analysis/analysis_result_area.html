@@ -1,0 +1,136 @@
+{include file="public/header"}
+<body>
+<style>
+    .charts{width: 100%;height: 700px;}
+</style>
+<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+<div class="page-container">
+
+    <div id="chart-1" class="charts"></div>
+</div>
+{include file="public/footer"}
+<script type="text/javascript" src="__STATIC__/js/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/echarts/theme/shine.js"></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chart-1'),'shine');
+    // 指定图表的配置项和数据
+    var option = {
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        legend: {
+            data: ['总量','现货一口价','现货基差', '远月一口价','远月基差']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis:  {
+            type: 'value'
+        },
+        yAxis: {
+            type: 'category',
+            data: {$area_str}
+        },
+        series: [
+            {
+                name: '总量',
+                type: 'bar',
+                //barWidth:10,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: {$volume_str}
+            },
+            {
+                name: '现货一口价',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight',
+                        formatter: function (params) {
+                            if (params.value > 0) {
+                                return params.value;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                },
+                data: {$volume_actuals_fixed_price}
+            },
+            {
+                name: '现货基差',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight',
+                        formatter: function (params) {
+                            if (params.value > 0) {
+                                return params.value;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                },
+                data: {$volume_actuals_basis}
+            },
+            {
+                name: '远月一口价',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight',
+                        formatter: function (params) {
+                            if (params.value > 0) {
+                                return params.value;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                },
+                data: {$volume_futures_fixed_price}
+            },
+            {
+                name: '远月基差',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight',
+                        formatter: function (params) {
+                            if (params.value > 0) {
+                                return params.value;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                },
+                data: {$volume_futures_basis}
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

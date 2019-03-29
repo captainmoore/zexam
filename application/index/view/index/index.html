@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=0">
+    <link rel="shortcut icon" href="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="__STATIC__/vendor/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--header s-->
+    <div class="layui-header">
+        <div class="layui-logo">投票管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="javascript:">控制台</a></li>
+            <li class="layui-nav-item"><a href="javascript:">控制台</a></li>
+            <li class="layui-nav-item"><a href="javascript:">控制台</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:">其他功能</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">邮件管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:">
+                    <img src="" class="layui-nav-img" alt="">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:">基本资料</a></dd>
+                    <dd><a href="javascript:">修改密码</a></dd>
+                    <hr>
+                    <dd><a href="javascripe:">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">注销</a></li>
+        </ul>
+    </div>
+    <!--header e-->
+
+    <!--left nav s-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:">试题管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:" data-url="{url('admin/index/login')}">添加试题</a></dd>
+                        <dd><a href="javascript:">查看试题</a></dd>
+                        <dd><a href="javascript:">试题导入</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:">试卷管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:">添加试卷</a></dd>
+                        <dd><a href="javascript:">查看试卷</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:">考试管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:">添加考试</a></dd>
+                        <dd><a href="javascript:">查看考试</a></dd>
+                        <dd><a href="javascript:">人工评卷</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:">添加用户</a></dd>
+                        <dd><a href="javascript:">查看用户</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed"><a href="">查看成绩</a></li>
+                <li class="layui-nav-item layui-nav-itemed"><a href="">查看投票</a></li>
+            </ul>
+        </div>
+    </div>
+    <!--left nav e-->
+
+    <!--main content s-->
+    <div class="layui-body">
+        <div>主体区域</div>
+        <div>{url('admin/index/login')}</div>
+    </div>
+    <!--main content e-->
+
+    <!--fixed footer s-->
+    <div class="layui-footer">
+        中陆党委机关网版权所有
+    </div>
+    <!--fixed footer e-->
+
+</div>
+<script src="__STATIC__/vendor/layui/layui.js"></script>
+<script>
+    layui.use('element',function () {
+        var element=layui.element;
+    });
+</script>
+</body>
+</html>

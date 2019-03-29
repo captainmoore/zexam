@@ -1,0 +1,48 @@
+{include file="public/header"}
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i>
+    首页 <span class="c-gray en">&gt;</span> 试卷管理 <span class="c-gray en">&gt;</span> 试卷列表
+    <span class="c-gray en">&gt;</span> 试卷详情
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container input-score">
+    <div class="title">
+        <h1>{$name}</h1>
+        <span>{$remark}</span>
+        <span class="r">修改时间：{$update_time}</span>
+        <span class="r mr-30">添加时间：{$create_time}</span>
+        <table class="table table-border table-bordered mt-10">
+            <tr>
+                <td>本卷共 <em>{$question_num}</em> 道题</td>
+            </tr>
+        </table>
+    </div>
+    <div class="mt-10">
+        <form name="myform" action="{:url('admin/test/inputScore')}" method="post">
+            <ul>
+                {volist name="questions" id="r" key="k"}
+                <li data-id="{$r.id}">
+                    <h4 class="c-primary">{$k} . {$r.title}</h4>
+                    <div class="options">
+                        <ol class="cl">
+                            {volist name="$r.answer" id="v"}
+                            <li class="f-l mr-30">
+                                <input type="checkbox" name="answer[{$r.id}][{$v.option}]" id="answer[{$r.id}][{$v.option}]">
+                                <label for="answer[{$r.id}][{$v.option}]" class="c-333">{$v.option} . {$v.content} <span class="c-999">[{$v.weight}分]</span></label>
+                            </li>
+                            {/volist}
+                        </ol>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+            <a href="{:url('admin/paper/paperList')}" class="btn btn-primary mt-20">返回试卷列表</a>
+            <a href="{:url('admin/paper/edit',['id'=>$paper_id])}" class="btn btn-primary mt-20">修改试卷</a>
+        </form>
+    </div>
+</div>
+{include file="public/footer"}
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+</body>
+</html>

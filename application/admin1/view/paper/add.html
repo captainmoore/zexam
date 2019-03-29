@@ -1,0 +1,152 @@
+{include file="public/header"}
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add" method="post" action="{:url('admin/paper/add')}">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>试卷标题：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="name" placeholder="在此输入试卷标题">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">题目列表：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div id="questions"></div>
+                <button class="btn btn-danger radius mt-10" id="choose_question">增加题目</button>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否启用：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-1" value="1" checked>
+                    <label for="status-1">是</label>
+                </div>
+                <div class="radio-box">
+                    <input name="status" type="radio" id="status-2" value="0">
+                    <label for="status-2">否</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="remark" cols="" rows="" class="textarea" placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+{include file="public/footer"}
+
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    var choosed = {};//选择的题
+    var n=1;
+    function add_form(data) {
+        var arr=[];
+        for(var item in data){
+            arr.push(parseInt(data[item]));
+        }
+        arr.sort(function (a,b) {
+            return a-b;
+        });
+        var html='';
+        $.ajax({
+            type:'post',
+            async:true,
+            url:"{:url('admin/questionChoice/getQuestionById')}",
+            data:{ids:arr},
+            dataType:'json',
+            success:function(data){
+                if(data.code==1){
+                    var questions=data.data;
+                    $.each(questions,function (i,question) {
+                        var answer=JSON.parse(question.answer);
+                        var answer_html='';
+                        $.each(answer,function (k,v) {
+                            answer_html+='<li>'+v.option+'. '+v.content+ ' ['+v.weight+'分]</li>';
+                        });
+                        html+='<dl class="permission-list">\n' +
+                            '<dt>\n' +
+                            '<label>排序:</label>\n' +
+                            '<input type="text" value="'+n+'" name="question['+n+'][list_order]" class="input-text inline ml-5 text-c" style="width:30px;">\n' +
+                            '<label class="ml-20">题目ID:</label>\n' +
+                            '<input type="text" value="'+question.id+'" name="question['+n+'][id]" readonly class="input-text inline ml-5 text-c" style="width:30px;">\n' +
+                            '<label class="ml-20">标题:</label>\n' +
+                            '<input type="text" value="'+question.title+'" name="question['+n+'][title]" readonly class="input-text inline ml-5">\n' +
+                            '<a href="javascript:" class="f-r ml-10 remove_self">移除本题</a>\n' +
+                            '<a href="javascript:" class="f-r show_detail" data-show="0">查看选项</a>\n' +
+                            '</dt>\n' +
+                            '<dd style="padding:10px; display: none;">\n' +
+                            '<div class="formControls cl">\n' +
+                            '<ul>\n' + answer_html +
+                            '</ul>\n' +
+                            '</div>\n' +
+                            '</dd>\n' +
+                            '</dl>';
+                        n++;
+                    });
+                    $('#questions').append(html);
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    }
+
+    $(function () {
+        var $body=$('body');
+
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-admin-add").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 16
+                },
+                sex: {
+                    required: true
+                },
+                sn: {
+                    required: true
+                }
+            }
+        });
+
+        $("#choose_question").click(function (e) {
+            e.preventDefault();
+            pop_window('选择题目', "{:url('admin/paper/chooseQuestion')}", "800", "600");
+        });
+
+        $body.on('click','.remove_self',function () {
+            $(this).parents('.permission-list').remove();
+        });
+        $body.on('click','.show_detail',function () {
+            if($(this).attr('data-show')==0){
+                $(this).parent().siblings('dd').show();
+                $(this).attr('data-show',1);
+            }else{
+                $(this).parent().siblings('dd').hide();
+                $(this).attr('data-show',0);
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

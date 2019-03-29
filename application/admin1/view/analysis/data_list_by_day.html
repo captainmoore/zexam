@@ -1,0 +1,160 @@
+{include file="public/header"}
+<style>
+    .charts{width: 100%;height: 700px;}
+    a.active_view{color:white; background-color: #0e90d2}
+</style>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span> 数据分析
+    <span class="c-gray en">&gt;</span> 数据列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <!--<a href="javascript:" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
+            <a class="btn btn-primary radius bg-1 c-blue active_view" data-type="day" onclick="switchView(this)"><i class="Hui-iconfont">&#xe600;</i> 日视图</a>
+            <a class="btn btn-primary radius bg-1 c-blue" data-type="month" onclick="switchView(this)"><i class="Hui-iconfont">&#xe600;</i> 月视图</a>
+        </span>
+        <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+    </div>
+    <div id="chart-1" class="charts"></div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="50">序号</th>
+                <th width="80">成交日期</th>
+                <th width="100">成交量</th>
+                <th>查看分析结果</th>
+                <th width="100">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='res' id='data'}
+            <tr class="text-c">
+                <td>{$i}</td>
+                <td>{:date('Y-m-d',$data.trade_date)}</td>
+                <td>{$data.total_volume}</td>
+                <td class="text-l">
+                    <a style="text-decoration:none" onClick="pop_window('{:date(\'Y年m月d日\',$data.trade_date)} 交易数据分析——按地区','{:url('admin/analysis/analysisResultArea',['date'=>$data.trade_date])}',800,700)" href="javascript:" title="编辑">按地区分析</a>
+                    <a style="text-decoration:none" onClick="pop_window('{:date(\'Y年m月d日\',$data.trade_date)} 交易数据分析——按品牌','{:url('admin/analysis/analysisResultBrand',['date'=>$data.trade_date])}',800,700)" href="javascript:" title="编辑">按品牌分析</a>
+                    <a style="text-decoration:none" onClick="pop_window('{:date(\'Y年m月d日\',$data.trade_date)} 交易数据分析——按油厂产权性质','{:url('admin/analysis/analysisResultNature',['date'=>$data.trade_date])}',800,700)" href="javascript:" title="编辑">按油厂产权性质</a>
+                </td>
+                <td class="f-14 product-brand-manage"></td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+{include file="public/footer"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="__STATIC__/js/echarts.js"></script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chart-1'));
+    // 指定图表的配置项和数据
+    option = {
+        tooltip:{
+            trigger:'axis',
+            axisPointer:{
+                type:'cross',
+                crossStyle:{color:'#999'}
+            }
+        },
+        toolbox:{
+            feature:{
+                dataView:{show:true,readOnly:false},
+                magicType:{show:true,type:['line','bar']},
+                restore:{show:true},
+                saveAsImage:{show:true}
+            }
+        },
+        legend:{
+            data:['总成交量','现货','基差']
+        },
+        xAxis:[
+            {
+                type:'category',
+                data:{$day_arr},
+                axisPointer:{type:'shadow'}
+            }
+        ],
+        yAxis:[
+            {
+                type:'value',
+                name:'成交量',
+                min:0,
+                max:{$max_volume}+2000,
+                axisLabel:{formatter:'{value}'}
+            }
+        ],
+        series:[
+            {
+                name:'现货',
+                type:'bar',
+                data:{$spot_volume}
+            },
+            {
+                name:'基差',
+                type:'bar',
+                data:{$basis_volume}
+            },
+            {
+                name:'总成交量',
+                type:'line',
+                data:{$volume}
+            }
+        ]
+
+
+
+    };
+console.log(option);
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script>
+    function switchView(v) {
+        var $this=$(v);
+        $this.addClass('active_view').siblings().removeClass('active_view');
+        var type=$this.attr('data-type');
+        $.ajax({
+            type:'GET',
+            url:"{:url('admin/analysis/ajaxGetTrade')}",
+            dataType:'json',
+            data:{type:type},
+            success:function (info) {
+                if(parseInt(info.code)===2){
+                    console.log(info.data);
+                    option.series[0].data=info.data.spot_volume_arr;
+                    option.series[1].data=info.data.basis_volume_arr;
+                    option.series[2].data=info.data.volume_arr;
+                    option.xAxis[0].data=info.data.time_arr;
+                    option.yAxis[0].max=info.data.max_volume;
+                    myChart.setOption(option);
+                }else{
+                    alert('获取数据出错，请联系管理员！');
+                }
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+            {"orderable":false,"aTargets":[0,3,4]}// 指定列不参与排序
+        ]
+    });
+</script>
+</body>
+</html>
