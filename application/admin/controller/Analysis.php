@@ -76,7 +76,7 @@ class Analysis extends Controller
             $sql_condition.=" and trade_date>='".strtotime($trade_date)."' and trade_date<='".strtotime($trade_date_end)."'";
         }
 
-        //成交量折线图start
+        //成交量折线图start1111
         $sql = 'select trade.id as id,trade_date,sum(volume) as total_volume from exam_analysis_data as trade join exam_analysis_refinery as re join exam_analysis_refinery_area as area where trade.refinery_id=re.id and re.area_id=area.id '.$sql_condition.' group by trade.trade_date order by trade_date ASC';
         $res = $this->analysisDataModel->query($sql);
 
